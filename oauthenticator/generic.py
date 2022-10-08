@@ -4,7 +4,7 @@ Custom Authenticator to use generic OAuth2 with JupyterHub
 import base64
 import os
 from functools import reduce
-from urllib.parse import urlencode
+from urllib.parse import urlencode, quote
 
 from jupyterhub.auth import LocalAuthenticator
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
@@ -89,7 +89,7 @@ class GenericOAuthenticator(OAuthenticator):
 
         if self.basic_auth:
             b64key = base64.b64encode(
-                bytes("{}:{}".format(self.client_id, self.client_secret), "utf8")
+                bytes("{}:{}".format(quote(self.client_id, safe=""), self.client_secret), "utf8")
             )
             headers.update({"Authorization": "Basic {}".format(b64key.decode("utf8"))})
         return headers
